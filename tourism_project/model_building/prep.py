@@ -1,11 +1,12 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import os
+import sys
 
-# Get project root from environment variable
-PROJECT_ROOT = os.environ.get("PROJECT_ROOT_DIR")
-if not PROJECT_ROOT:
-    raise RuntimeError("PROJECT_ROOT_DIR environment variable not set.")
+# Get project root from command-line argument
+if len(sys.argv) < 2:
+    raise RuntimeError("PROJECT_ROOT_DIR not provided as command-line argument.")
+PROJECT_ROOT = sys.argv[1]
 
 RAW_PATH = os.path.join(PROJECT_ROOT, "data", "tourism.csv")
 
