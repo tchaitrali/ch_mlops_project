@@ -80,4 +80,4 @@ with mlflow.start_run():
     joblib.dump(best_model, model_path)
 
     print(f"Best model saved to {model_path}")
-    mlflow.sklearn.log_model(best_model, "model")
+    mlflow.sklearn.log_model(best_model, "model", serialization_format='cloudpickle')
