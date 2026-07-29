@@ -1,6 +1,10 @@
 import pandas as pd
+import os
 
-RAW_PATH = "tourism_project/data/tourism.csv"
+# Construct path to tourism.csv robustly
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR) # Go up from model_building to tourism_project
+RAW_PATH = os.path.join(PROJECT_ROOT, "data", "tourism.csv")
 
 # Load the raw dataset
 df = pd.read_csv(RAW_PATH)
