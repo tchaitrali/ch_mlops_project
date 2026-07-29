@@ -1,24 +1,32 @@
 import pandas as pd
+from sklearn.model_selection import train_test_split
+import os
 
-RAW_PATH = "tourism_project/data/tourism.csv"
+# Get project root from environment variable
+PROJECT_ROOT = os.environ.get("PROJECT_ROOT_DIR")
+if not PROJECT_ROOT:
+    raise RuntimeError("PROJECT_ROOT_DIR environment variable not set.")
 
-# Load the raw dataset
+RAW_PATH = os.path.join(PROJECT_ROOT, "data", "tourism.csv")
+
 df = pd.read_csv(RAW_PATH)
 
-# Validate that the expected columns are present before registering it
-expected_columns = [
-    "CustomerID", "ProdTaken", "Age", "TypeofContact",
-    "CityTier", "Occupation", "Gender", "NumberOfPersonVisiting",
-    "PreferredPropertyStar", "MaritalStatus", "NumberOfTrips",
-    "Passport", "OwnCar", "NumberOfChildrenVisiting", "Designation","MonthlyIncome",
-    "PitchSatisfactionScore", "ProductPitched", "NumberOfFollowups", "DurationOfPitch"
-]
-missing = [c for c in expected_columns if c not in df.columns]
-if missing:
-    raise ValueError(f"Dataset is missing expected columns: {missing}")
+# Let's drop CustomerID as it's an unique identifier
+df.drop(columns=["CustomerID"], inplace=True)
 
-print("Dataset registered successfully.")
-print(f"Rows: {df.shape[0]}, Columns: {df.shape[1]}")
-print("Columns:", list(df.columns))
-print("ProdTaken distribution:")
-print(df["ProdTaken"].value_counts())
+# Let's define X and target y
+X = df.drop(columns=["ProdTaken"])
+y = df["ProdTaken"]
+
+# Split data into training and testing sets
+Xtrain, Xtest, ytrain, ytest = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# Save the splits to CSV files
+Xtrain.to_csv("Xtrain.csv", index=False)
+Xtest.to_csv("Xtest.csv", index=False)
+ytrain.to_csv("ytrain.csv", index=False)
+ytest.to_csv("ytest.csv", index=False)
+
+print("Data prepared: train/test splits written.")
