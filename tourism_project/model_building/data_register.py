@@ -1,9 +1,11 @@
 import pandas as pd
 import os
 
-# Construct path to tourism.csv robustly
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.dirname(SCRIPT_DIR) # Go up from model_building to tourism_project
+# Get project root from environment variable
+PROJECT_ROOT = os.environ.get("PROJECT_ROOT_DIR")
+if not PROJECT_ROOT:
+    raise RuntimeError("PROJECT_ROOT_DIR environment variable not set.")
+
 RAW_PATH = os.path.join(PROJECT_ROOT, "data", "tourism.csv")
 
 # Load the raw dataset
