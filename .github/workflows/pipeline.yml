@@ -21,7 +21,8 @@ jobs:
       - name: Install Dependencies
         run: pip install pandas
       - name: Register Dataset
-        run: python tourism_project/model_building/data_register.py
+        working-directory: tourism_project/model_building
+        run: python data_register.py
       - name: Upload Registered Dataset
         uses: actions/upload-artifact@v4
         with:
@@ -39,16 +40,17 @@ jobs:
       - name: Install Dependencies
         run: pip install pandas scikit-learn
       - name: Run Data Preparation
-        run: python tourism_project/model_building/prep.py
+        working-directory: tourism_project/model_building
+        run: python prep.py
       - name: Upload Train Test Splits
         uses: actions/upload-artifact@v4
         with:
           name: data-splits
           path: |
-            Xtrain.csv
-            Xtest.csv
-            ytrain.csv
-            ytest.csv
+            tourism_project/model_building/Xtrain.csv
+            tourism_project/model_building/Xtest.csv
+            tourism_project/model_building/ytrain.csv
+            tourism_project/model_building/ytest.csv
 
   model-traning:
     needs: data-prep
@@ -64,12 +66,14 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: data-splits
+          path: tourism_project/model_building/
       - name: Start MLflow Server
         run: |
           nohup mlflow ui --host 0.0.0.0 --port 5000 &  # Run MLflow UI in the background
           sleep 5  # Wait for a moment to let the server starts
       - name: Model Building
-        run: python tourism_project/model_building/train.py
+        working-directory: tourism_project/model_building
+        run: python train.py
       - name: Commit Trained Model
         run: |
           git config user.name "github-actions[bot]"
