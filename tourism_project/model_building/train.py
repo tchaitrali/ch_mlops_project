@@ -75,8 +75,13 @@ with mlflow.start_run():
     print(f"F1 Score: {f1:.4f}")
 
     # Save the best model
-    model_path = "tourism_project/deployment/best_model.joblib"
-    os.makedirs(os.path.dirname(model_path), exist_ok=True)
+    # Construct path to deployment directory robustly
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    PROJECT_ROOT = os.path.dirname(SCRIPT_DIR) # Go up from model_building to tourism_project
+    DEPLOYMENT_DIR = os.path.join(PROJECT_ROOT, "deployment")
+    model_path = os.path.join(DEPLOYMENT_DIR, "best_model.joblib")
+
+    os.makedirs(DEPLOYMENT_DIR, exist_ok=True)
     joblib.dump(best_model, model_path)
 
     print(f"Best model saved to {model_path}")
