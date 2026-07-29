@@ -22,6 +22,8 @@ jobs:
         run: pip install pandas
       - name: Register Dataset
         working-directory: tourism_project/model_building
+        env:
+          PROJECT_ROOT_DIR: ${{ github.workspace }}/tourism_project
         run: python data_register.py
       - name: Upload Registered Dataset
         uses: actions/upload-artifact@v4
@@ -41,6 +43,8 @@ jobs:
         run: pip install pandas scikit-learn
       - name: Run Data Preparation
         working-directory: tourism_project/model_building
+        env:
+          PROJECT_ROOT_DIR: ${{ github.workspace }}/tourism_project
         run: python prep.py
       - name: Upload Train Test Splits
         uses: actions/upload-artifact@v4
