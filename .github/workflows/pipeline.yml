@@ -78,6 +78,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull origin main  # Pull latest changes before pushing
           git add tourism_project/deployment/best_model.joblib   # path to the saved model file
           git commit -m "Add trained model [skip ci]" || echo "No changes to commit"
           git push
