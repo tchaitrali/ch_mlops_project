@@ -11,6 +11,16 @@ model = joblib.load(MODEL_PATH)
 st.title("Wellness Tourism Package Purchase Predictor")
 st.write("Enter customer details to predict if they will purchase the Wellness Tourism Package.")
 
+# Define the expected order of columns as used during training
+# This order was derived from the X_train in train.py after dropping CustomerID
+expected_columns = [
+    "Age", "TypeofContact", "CityTier", "Occupation", "Gender",
+    "NumberOfPersonVisiting", "PreferredPropertyStar", "MaritalStatus",
+    "NumberOfTrips", "Passport", "OwnCar", "NumberOfChildrenVisiting",
+    "Designation", "MonthlyIncome", "PitchSatisfactionScore",
+    "ProductPitched", "NumberOfFollowups", "DurationOfPitch"
+]
+
 # Create input widgets for each feature
 with st.form("prediction_form"):
     st.header("Customer Information")
@@ -46,27 +56,30 @@ with st.form("prediction_form"):
     submitted = st.form_submit_button("Predict Purchase")
 
     if submitted:
-        # Create a DataFrame from inputs
-        input_data = pd.DataFrame({
-            'Age': [age],
-            'TypeofContact': [typeofcontact],
-            'CityTier': [citytier],
-            'Occupation': [occupation],
-            'Gender': [gender],
-            'NumberOfPersonVisiting': [numberofpersonvisiting],
-            'PreferredPropertyStar': [preferredpropertystar],
-            'MaritalStatus': [maritalstatus],
-            'NumberOfTrips': [numberoftrips],
-            'Passport': [1 if passport else 0],
-            'OwnCar': [1 if owncar else 0],
-            'NumberOfChildrenVisiting': [numberofchildrenvisiting],
-            'Designation': [designation],
-            'MonthlyIncome': [monthlyincome],
-            'PitchSatisfactionScore': [pitchsatisfactionscore],
-            'ProductPitched': [productpitched],
-            'NumberOfFollowups': [numberoffollowups],
-            'DurationOfPitch': [durationofpitch]
-        })
+        # Create a dictionary from inputs
+        raw_input_data = {
+            'Age': age,
+            'TypeofContact': typeofcontact,
+            'CityTier': citytier,
+            'Occupation': occupation,
+            'Gender': gender,
+            'NumberOfPersonVisiting': numberofpersonvisiting,
+            'PreferredPropertyStar': preferredpropertystar,
+            'MaritalStatus': maritalstatus,
+            'NumberOfTrips': numberoftrips,
+            'Passport': 1 if passport else 0,
+            'OwnCar': 1 if owncar else 0,
+            'NumberOfChildrenVisiting': numberofchildrenvisiting,
+            'Designation': designation,
+            'MonthlyIncome': monthlyincome,
+            'PitchSatisfactionScore': pitchsatisfactionscore,
+            'ProductPitched': productpitched,
+            'NumberOfFollowups': numberoffollowups,
+            'DurationOfPitch': durationofpitch
+        }
+
+        # Create a DataFrame from inputs, ensuring the column order matches expected_columns
+        input_data = pd.DataFrame([raw_input_data], columns=expected_columns)
 
         # Make prediction
         prediction = model.predict(input_data)
