@@ -12,6 +12,10 @@ RAW_PATH = os.path.join(PROJECT_ROOT, "data", "tourism.csv")
 
 df = pd.read_csv(RAW_PATH)
 
+# Drop 'Unnamed: 0' column if it exists, which can happen if CSV was saved with index
+if 'Unnamed: 0' in df.columns:
+    df = df.drop(columns=['Unnamed: 0'])
+
 # Let's drop CustomerID as it's an unique identifier
 df.drop(columns=["CustomerID"], inplace=True)
 
